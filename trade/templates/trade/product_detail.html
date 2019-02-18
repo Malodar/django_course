@@ -1,0 +1,20 @@
+{% extends 'trade/base.html' %}
+
+{% block title %}
+{{ product.name }} - {{ product.category }}
+{% endblock %}
+
+{% block content %}
+    <h2>{{ product.name }}
+        <a style="font-size: 15px" href="{% url "product_edit" product.slug %}">Изменить</a>
+        <a style="font-size: 15px" href="{% url "product_delete" product.slug %}">Удалить</a>
+    </h2>
+    {% if product.image %}
+        <img class="img-thumbnail" src="{{ product.image.url }}" style="height: 300px; width: auto" alt="Card image">
+    {% endif %}
+    <p>Цена: {{ product.price }} кр.</p>
+    <button type="submit" value="">В корзину</button>
+
+
+    <p><a href="{% url "home" %}">На главную</a></p>
+{% endblock %}

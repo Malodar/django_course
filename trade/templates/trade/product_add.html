@@ -1,0 +1,14 @@
+{% extends 'trade/base.html' %}
+
+{% block title %}
+Добавить товар
+{% endblock %}
+
+{% block content %}
+<h1>Новый товар</h1>
+    <form action="" method="post"  enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn btn-primary" type="submit">Сохранить</button>
+    </form>
+{% endblock %}

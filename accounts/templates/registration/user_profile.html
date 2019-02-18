@@ -1,0 +1,25 @@
+{% extends 'trade/base.html' %}
+{% load static %}
+{% block title %}
+{{ customuser.username }}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        {% if user.avatar %}
+            <img class="img-fluid" style="max-width: 50%; height:auto;" src="{{ user.avatar.url }}" alt="avatar">
+        {% else %}
+            <img class="img-fluid" style="max-width: 50%; height:auto;"
+                 src="{% static "/img/default_avatar.jpg" %}" alt="avatar">
+        {% endif %}
+    </div>
+    <div class="container">
+        <p>Имя: {{ customuser.username }}</p>
+        <p>Email: {{ customuser.email }}</p>
+        <p>Ваш счет: {{ customuser.money }} кр.</p>
+    </div>
+
+    <p><a class="btn btn-primary" href="{% url "product_add" %}">Добавить товар</a> </p>
+    <p><a class="btn btn-dark" href="{% url 'user_edit' customuser.pk %}">Изменить профиль</a></p>
+    <p><a class="btn btn-info" href="{% url "home" %}">На главную страницу</a></p>
+{% endblock %}

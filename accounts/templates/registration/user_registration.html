@@ -1,0 +1,14 @@
+{% extends 'trade/base.html' %}
+
+{% block title %}
+Новый пользователь
+{% endblock %}
+
+{% block content %}
+<h1>Создание нового пользователя</h1>
+    <form action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Создать">
+    </form>
+{% endblock %}

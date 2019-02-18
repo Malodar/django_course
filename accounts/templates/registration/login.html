@@ -1,0 +1,14 @@
+{% extends 'trade/base.html' %}
+
+{% block title %}
+Вход в учетную запись
+{% endblock %}
+
+{% block content %}
+<h1>Введите логин и пароль</h1>
+    <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Войти">
+    </form>
+{% endblock %}
