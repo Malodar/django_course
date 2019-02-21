@@ -6,16 +6,19 @@
 {% endblock %}
 
 {% block content %}
+
+
+
     {% for product in product_list %}
-        <div class="card col-md-4" style=" justify-items: center; float: left">
+        <div class="card col-md-3" style=" justify-items: center; float: left">
             {% if product.image %}
-                <a href="{% url 'product_detail' product.slug %}">
+                <a href="{{ product.get_absolute_url }}">
                     <img class="img-thumbnail mx-auto d-block" src="{{ product.image.url }}" alt="Card image"
                          style="height: 130px; width: auto; border: 0px">
                 </a>
             {% endif %}
             <div class="card-body">
-                <h4 class="card-title"><a href="{% url 'product_detail' product.slug %}">{{ product.name }}</a></h4>
+                <h4 class="card-title"><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h4>
                 <span class="align-right">{{ product.owner }}</span>
                 <p class="card-text">{{ product.description }}</p>
                 <h5>{{ product.price }} кр.</h5>

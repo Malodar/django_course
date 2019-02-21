@@ -22,40 +22,69 @@
 <div class="base-masthead">
     <div class="container">
         <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
-      <a class="navbar-brand" href="{% url 'home' %}">Крутой аукцион</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
-              aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarCollapse">
-        {% if user.is_authenticated %}
-          <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-              <a class="nav-link dropdown-toggle" href="#" id="userMenu" data-toggle="dropdown" aria-haspopup="true"
-                 aria-expanded="false">
-                {{ user.username }}
-              </a>
-              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userMenu">
-                <a class="dropdown-item" href="{% url 'user_profile' user.pk%}">Мой профиль</a>
-                <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="{% url 'product_add' %}">Добавить товар</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item text-danger" href="{% url 'logout' %}">Выйти из профиля</a>
-              </div>
-            </li>
-          </ul>
-        {% else %}
-          <form class="form-inline ml-auto">
-            <a href="{% url 'login' %}" class="btn btn-outline-secondary">Войти</a>
-            <a href="{% url 'user_registration' %}" class="btn btn-primary ml-2">Регистрация</a>
-          </form>
-        {% endif %}
-      </div>
-    </nav>
+          <a class="navbar-brand" href="{% url 'home' %}">Крутой аукцион</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+                  aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+
+            {% if user.is_authenticated %}
+              <ul class="navbar-nav ml-auto sticky-top">
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                    Категории
+                  </a>
+                  <div class="dropdown-menu">
+                       {% for category in category_list %}
+                        <a class="dropdown-item" href="{{ category.get_absolute_url }}">{{ category.category_name }}</a>
+                           <div class="dropdown-divider"></div>
+                        {% endfor %}
+                  </div>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link dropdown-toggle" href="#" id="userMenu" data-toggle="dropdown" aria-haspopup="true"
+                     aria-expanded="false">
+                    {{ user.username }}
+                  </a>
+                  <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userMenu">
+                    <a class="dropdown-item" href="{% url 'user_profile' user.pk%}">Мой профиль</a>
+                    <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="{% url 'product_add' %}">Добавить товар</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item text-danger" href="{% url 'logout' %}">Выйти из профиля</a>
+                  </div>
+                </li>
+              </ul>
+                {% else %}
+                <ul class="navbar-nav ml-auto sticky-top">
+                    <li class="nav-item dropdown">
+                      <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                        Категории
+                      </a>
+                      <div class="dropdown-menu">
+                           {% for category in category_list %}
+                            <a class="dropdown-item" href="{{ category.get_absolute_url }}">{{ category.category_name }}</a>
+                               <div class="dropdown-divider"></div>
+                            {% endfor %}
+                      </div>
+                    </li>
+                    <li class="nav-item">
+                        <form class="form-inline ml-auto">
+                            <a href="{% url 'login' %}" class="btn btn-outline-secondary">Войти</a>
+                            <a href="{% url 'user_registration' %}" class="btn btn-primary ml-2">Регистрация</a>
+                        </form>
+                    </li>
+                </ul>
+                {% endif %}
+            </div>
+        </nav>
     </div>
 </div>
 <div class="container">
-    {% block content %}{% endblock %}
+    {% block content %}
+
+    {% endblock %}
 </div>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->

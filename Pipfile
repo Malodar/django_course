@@ -9,6 +9,7 @@ verify_ssl = true
 django = "*"
 pillow = "*"
 psycopg2-binary = "*"
+transliterate = "*"
 
 [requires]
 python_version = "3.6"

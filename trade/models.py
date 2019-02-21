@@ -1,7 +1,6 @@
 from django.db import models
 from accounts.models import CustomUser
 from django.urls import reverse
-# from django.template.defaultfilters import slugify
 
 
 class Category(models.Model):
@@ -14,6 +13,9 @@ class Category(models.Model):
     class Meta:
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
+
+    def get_absolute_url(self):
+        return reverse('category_detail', args=[self.slug])
 
 
 class Product(models.Model):
@@ -33,16 +35,6 @@ class Product(models.Model):
         verbose_name = 'Товар'
         index_together = (('id', 'slug'),)
 
-    # def save(self, force_insert=False, force_update=False, using=None,
-    #          update_fields=None):
-    #     if not self.slug:
-    #         self.slug = slugify(self.name)
-    #         super(Product, self).save()
-
     def get_absolute_url(self):
         return reverse('product_detail', args=[self.slug])
 
-
-# class Cart(models.Model):
-#     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-#     owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
