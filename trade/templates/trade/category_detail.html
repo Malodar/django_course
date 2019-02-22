@@ -5,9 +5,23 @@
 {% endblock %}
 
 {% block content %}
-категория {{ category.category_name }}
+<h3>Категория: {{ category.category_name }}</h3>
     {% for object in object_list %}
-        <p>{{ object }}</p>
+         <div class="card col-md-3" style=" justify-items: center; float: left">
+            {% if object.image %}
+                <a href="{{ object.get_absolute_url }}">
+                <img class="img-thumbnail" src="{{ object.image.url }}" style="height: 150px; width: auto" alt="Card image">
+                </a>
+            {% endif %}
+         <div class="card-body">
+            <h4 class="card-title"><a href="{{ object.get_absolute_url }}">{{ object.name }}</a></h4>
+            <span class="align-right">{{ object.owner }}</span>
+            <p class="card-text">{{ object.description }}</p>
+            <h5>{{ object.price }} кр.</h5>
+        </div>
+         </div>
+
+
     {% endfor %}
 
 {% endblock %}

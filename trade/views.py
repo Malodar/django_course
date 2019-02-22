@@ -1,10 +1,12 @@
 from django.shortcuts import render
+from django.http import HttpResponseRedirect
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import UpdateView, DeleteView, CreateView
-from .models import Product, Category
-from django.urls import reverse_lazy
+from trade.models import Product, Category, Cart, CartItem
+from django.urls import reverse_lazy, reverse
 from django.utils.text import slugify
 from transliterate import translit
+from transliterate.exceptions import LanguageDetectionError
 from django.shortcuts import get_object_or_404
 
 
@@ -12,8 +14,6 @@ class HomeView(ListView):
     model = Product
     template_name = 'trade/home.html'
     paginate_by = 30
-    qs = Category.objects.all()
-    extra_context = {'category_list': qs}
 
 
 class ProductDetailView(DetailView):
@@ -43,7 +43,10 @@ class ProductCreateView(CreateView):
 
     def form_valid(self, form):
         form.instance.owner = self.request.user
-        form.instance.slug = slugify(translit(self.request.POST['name'], reversed=True), allow_unicode=True)
+        try:
+            form.instance.slug = slugify(translit(self.request.POST['name'], reversed=True), allow_unicode=True)
+        except LanguageDetectionError:
+            form.instance.slug = slugify(self.request.POST['name'], allow_unicode=True)
         return super().form_valid(form)
 
 
@@ -61,3 +64,54 @@ class CategoryView(ListView):
         # Add in the publisher
         context['category'] = self.category
         return context
+
+
+def cart_view(request):
+    try:
+        cart_id = request.session['cart_id']
+        cart = Cart.objects.get(id=cart_id)
+        request.session['total'] = cart.items.count()
+    except:
+        cart = Cart()
+        cart.save()
+        cart_id = cart.id
+        request.session['cart_id'] = cart_id
+        cart = Cart.objects.get(id=cart_id)
+    context = {
+        'cart': cart,
+    }
+    return render(request, 'trade/cart.html', context)
+
+
+def add_to_cart(request, slug):
+
+    try:
+        cart_id = request.session['cart_id']
+        cart = Cart.objects.get(id=cart_id)
+        request.session['total'] = cart.items.count()
+    except:
+        cart = Cart()
+        cart.save()
+        cart_id = cart.id
+        request.session['cart_id'] = cart_id
+        cart = Cart.objects.get(id=cart_id)
+    product = Product.objects.get(slug=slug)
+    cart.add_to_cart(product.slug)
+    return HttpResponseRedirect(reverse('cart_view'))
+
+
+def remove_from_cart(request, slug):
+    try:
+        cart_id = request.session['cart_id']
+        cart = Cart.objects.get(id=cart_id)
+        request.session['total'] = cart.items.count()
+    except:
+        cart = Cart()
+        cart.save()
+        cart_id = cart.id
+        request.session['cart_id'] = cart_id
+        cart = Cart.objects.get(id=cart_id)
+    product = Product.objects.get(slug=slug)
+    cart.remove_from_cart(product.slug)
+    return HttpResponseRedirect(reverse('cart_view'))
+

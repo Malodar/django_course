@@ -6,15 +6,18 @@
 
 {% block content %}
      <h2>{{ product.name }}
-        <a style="font-size: 15px" href="{% url "product_edit" product.slug %}">Изменить</a>
-        <a style="font-size: 15px" href="{% url "product_delete" product.slug %}">Удалить</a>
+         {% if user.username == product.owner.username %}
+             <a style="font-size: 15px" href="{% url "product_edit" product.slug %}">Изменить</a>
+             <a style="font-size: 15px" href="{% url "product_delete" product.slug %}">Удалить</a>
+         {% endif %}
+
     </h2>
     {% if product.image %}
         <img class="img-thumbnail" src="{{ product.image.url }}" style="height: 300px; width: auto" alt="Card image">
     {% endif %}
     <p>Цена: {{ product.price }} кр.</p>
-    {% if user.is_authenticated %}
-        <a href="#"><button class="btn btn-danger" type="submit" value="">В корзину</button></a>
+    {% if user.is_authenticated and user.username != product.owner.username %}
+        <a href="{% url "add_to_cart_view" product.slug %}"><button class="btn btn-danger" type="submit" value="">В корзину</button></a>
     {% endif %}
 
     <a href="{% url "home" %}"><button class="btn btn-primary" type="submit" value="">На главную</button></a>
