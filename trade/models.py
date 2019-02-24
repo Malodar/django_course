@@ -73,3 +73,10 @@ class Cart(models.Model):
             if cart_item.product == product:
                 cart.items.remove(cart_item)
                 cart.save()
+
+    def calculate_total(self):
+        cart = self
+        total = 0
+        for cart_item in cart.items.all():
+            total += cart_item.product.price
+        return total

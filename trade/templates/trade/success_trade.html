@@ -1,0 +1,10 @@
+{% extends 'trade/base.html' %}
+
+{% block title %}
+Заказ оплачен
+{% endblock %}
+
+{% block content %}
+<h3>Ваш заказ успешно оплачен!</h3>
+    <a class="button" href="{% url 'home' %}"><button class="btn btn-primary">На главную</button> </a>
+{% endblock %}

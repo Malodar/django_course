@@ -1,10 +1,16 @@
 # -*- coding: UTF-8 -*-
-from trade.models import Category, Cart
+from trade.models import Category, Cart, Product
+from accounts.models import CustomUser
 
 
 def get_categories(request):
     qs_categories = Category.objects.all().order_by('category_name')
-    # qs_cart = Cart.objects.first()
+    extra_context = {'category_list': qs_categories,
+                     }
+    return extra_context
+
+
+def get_cart(request):
     try:
         cart_id = request.session['cart_id']
         cart = Cart.objects.get(id=cart_id)
@@ -15,7 +21,23 @@ def get_categories(request):
         cart_id = cart.id
         request.session['cart_id'] = cart_id
         cart = Cart.objects.get(id=cart_id)
-    extra_context = {'category_list': qs_categories,
+    cart_total = cart.calculate_total()
+    extra_context = {
                      'cart': cart,
+                     'cart_total': cart_total,
                      }
+    return extra_context
+
+
+def get_filtered_prods(request):
+    try:
+        user_id = request.session['_auth_user_id']
+        prods = Product.objects.filter(owner_id=user_id)
+        extra_context = {
+            'prods': prods,
+        }
+    except:
+        extra_context = {
+            'prods': '',
+        }
     return extra_context

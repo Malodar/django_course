@@ -3,6 +3,7 @@ from django.views.generic import CreateView, DetailView, UpdateView
 from django.urls import reverse_lazy
 from accounts.forms import CustomUserCreationForm
 from accounts.models import CustomUser
+from trade.models import Product
 
 
 class UserRegistrationView(CreateView):

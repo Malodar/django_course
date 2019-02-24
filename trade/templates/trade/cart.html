@@ -35,7 +35,20 @@
         </td>
     </tr>
  {% endfor %}
-
+    <tr>
+        <td class="font-weight-bold">Итого:</td>
+        <td class="font-weight-bold">{{ cart_total }}</td>
+        <td></td>
+    </tr>
  </tbody>
  </table>
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+              <li class="alert alert-dismissible {{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <a href="{% url 'make_order' %}" class="float-right"><button class="btn btn-success">Оформить заказ</button> </a>
+    {% endif %}
 {% endblock %}

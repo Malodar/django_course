@@ -1,19 +1,22 @@
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import UpdateView, DeleteView, CreateView
 from trade.models import Product, Category, Cart, CartItem
+from accounts.models import CustomUser
 from django.urls import reverse_lazy, reverse
 from django.utils.text import slugify
 from transliterate import translit
 from transliterate.exceptions import LanguageDetectionError
 from django.shortcuts import get_object_or_404
+from django.contrib import messages
 
 
 class HomeView(ListView):
     model = Product
     template_name = 'trade/home.html'
     paginate_by = 30
+    ordering = 'name'
 
 
 class ProductDetailView(DetailView):
@@ -59,32 +62,16 @@ class CategoryView(ListView):
         return Product.objects.filter(category=self.category)
 
     def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-        # Add in the publisher
         context['category'] = self.category
         return context
 
 
 def cart_view(request):
-    try:
-        cart_id = request.session['cart_id']
-        cart = Cart.objects.get(id=cart_id)
-        request.session['total'] = cart.items.count()
-    except:
-        cart = Cart()
-        cart.save()
-        cart_id = cart.id
-        request.session['cart_id'] = cart_id
-        cart = Cart.objects.get(id=cart_id)
-    context = {
-        'cart': cart,
-    }
-    return render(request, 'trade/cart.html', context)
+    return render(request, 'trade/cart.html')
 
 
 def add_to_cart(request, slug):
-
     try:
         cart_id = request.session['cart_id']
         cart = Cart.objects.get(id=cart_id)
@@ -115,3 +102,35 @@ def remove_from_cart(request, slug):
     cart.remove_from_cart(product.slug)
     return HttpResponseRedirect(reverse('cart_view'))
 
+
+def make_order(request):
+    try:
+        cart_id = request.session['cart_id']
+        cart = Cart.objects.get(id=cart_id)
+        request.session['total'] = cart.items.count()
+    except:
+        cart = Cart()
+        cart.save()
+        cart_id = cart.id
+        request.session['cart_id'] = cart_id
+        cart = Cart.objects.get(id=cart_id)
+    buyer_id = request.session['_auth_user_id']
+    buyer = CustomUser.objects.get(id=buyer_id)
+    cart_total = cart.calculate_total()
+    if cart_total < buyer.money:
+        for cart_item in cart.items.all():
+            seller_id = cart_item.product.owner_id
+            seller = CustomUser.objects.get(id=seller_id)
+
+            seller.money += cart_item.product.price
+            buyer.money -= cart_item.product.price
+            cart_item.product.owner_id = buyer_id
+
+            seller.save()
+            cart_item.product.save()
+            cart.remove_from_cart(cart_item.product.slug)
+        buyer.save()
+        return render(request, 'trade/success_trade.html')
+    else:
+        messages.warning(request, 'Сумма заказа больше, чем у вас денег. Удалите лишние товары.')
+        return HttpResponseRedirect(reverse('cart_view'))

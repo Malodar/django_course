@@ -31,6 +31,9 @@
 
             {% if user.is_authenticated %}
               <ul class="navbar-nav ml-auto sticky-top">
+                <li  class="nav-item">
+                  <a href="{% url 'cart_view' %}" class="nav-link">Cумма товаров в корзине: {{ cart_total }} кр.</a>
+              </li>
                 <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
                     Категории

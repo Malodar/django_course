@@ -18,6 +18,12 @@
         <p>Email: {{ customuser.email }}</p>
         <p>Ваш счет: {{ customuser.money }} кр.</p>
     </div>
+    <div class="card float-right">
+    <p class="font-weight-bold">Список Ваших товаров:</p>
+        {% for foo in prods %}
+            <li>{{ foo }}</li>
+        {% endfor %}
+    </div>
 
     <p><a class="btn btn-primary" href="{% url "product_add" %}">Добавить товар</a> </p>
     <p><a class="btn btn-dark" href="{% url 'user_edit' customuser.pk %}">Изменить профиль</a></p>

@@ -16,9 +16,15 @@
         <img class="img-thumbnail" src="{{ product.image.url }}" style="height: 300px; width: auto" alt="Card image">
     {% endif %}
     <p>Цена: {{ product.price }} кр.</p>
+    <p>{{ product.description }}</p>
+    <p>{% lorem %}</p>
     {% if user.is_authenticated and user.username != product.owner.username %}
-        <a href="{% url "add_to_cart_view" product.slug %}"><button class="btn btn-danger" type="submit" value="">В корзину</button></a>
-    {% endif %}
+        <a href="{% url "add_to_cart_view" product.slug %}">
+            <button class="btn btn-danger" type="submit" value="">В корзину</button>
+        </a>
 
-    <a href="{% url "home" %}"><button class="btn btn-primary" type="submit" value="">На главную</button></a>
+    {% endif %}
+    <a href="{% url "home" %}">
+        <button class="btn btn-primary" type="submit" value="">На главную</button>
+    </a>
 {% endblock %}

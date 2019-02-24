@@ -65,6 +65,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'trade.context_processors.get_categories',
+                'trade.context_processors.get_cart',
+                'trade.context_processors.get_filtered_prods',
             ],
         },
     },
